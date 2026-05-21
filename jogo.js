@@ -1288,7 +1288,7 @@ function levelComplete() {
 function startGame(sceneIndex, mode = 'follow') {
   G.sceneIndex = sceneIndex;
   G.scene = SCENES[sceneIndex];
-  G.t = 0;
+  G.t = 0.12; // começa no 1.º waypoint real (salta o ponto fantasma)
   G.starsCount = 0;
   G.running = false;
   G.paused = false;
@@ -1334,8 +1334,20 @@ function startGame(sceneIndex, mode = 'follow') {
   // Show game screen then countdown
   showScreen('screen-game');
 
-  // Place stars after screen shown
+  // Place stars + pré-posicionar personagem antes do countdown
   requestAnimationFrame(() => {
+    const W = window.innerWidth, H = window.innerHeight;
+    const offsets = { dolphin:[100,50], butterfly:[80,60], rocket:[35,70], macaw:[90,63] };
+    const [ox, oy] = offsets[G.scene.charKey] || [70, 50];
+
+    // Posição inicial: 1.º waypoint real (G.t = 0.12)
+    const [fx0, fy0] = catmullRom(G.pathPts, G.t);
+    G.charPos = [fx0 * W, fy0 * H];
+    const charWrap = el('character-wrap');
+    if (charWrap) {
+      charWrap.style.transform = `translate(${G.charPos[0] - ox}px, ${G.charPos[1] - oy}px)`;
+    }
+
     placeStars(G.scene);
 
     runCountdown(() => {
