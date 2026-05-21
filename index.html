@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReMotiva — Recuperação Motora</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       ECRÃ 1: BOAS-VINDAS
+  ═══════════════════════════════════════════════ -->
+  <main id="screen-home" class="screen active" role="main">
+    <div class="home-inner">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="14" r="10" fill="#10B981" stroke="#fff" stroke-width="2"/>
+            <rect x="24" y="26" width="16" height="22" rx="6" fill="#2563EB" stroke="#fff" stroke-width="2"/>
+            <line x1="24" y1="31" x2="12" y2="44" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+            <line x1="40" y1="31" x2="52" y2="44" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1>ReMotiva</h1>
+        <p class="tagline">Recuperação Motora Guiada</p>
+      </div>
+
+      <div class="home-categories" aria-label="Escolha a área a exercitar">
+        <h2>O que quer exercitar hoje?</h2>
+        <div class="category-grid">
+          <button class="category-btn" data-category="cabeca" aria-label="Exercícios para a cabeça e pescoço">
+            <span class="cat-icon" aria-hidden="true">🧠</span>
+            <span class="cat-name">Cabeça</span>
+            <span class="cat-desc">Pescoço · Cervical</span>
+            <span class="cat-count">4 exercícios</span>
+          </button>
+          <button class="category-btn" data-category="bracos" aria-label="Exercícios para braços e ombros">
+            <span class="cat-icon" aria-hidden="true">💪</span>
+            <span class="cat-name">Braços</span>
+            <span class="cat-desc">Ombros · Cotovelos</span>
+            <span class="cat-count">4 exercícios</span>
+          </button>
+          <button class="category-btn" data-category="maos" aria-label="Exercícios para mãos e punhos">
+            <span class="cat-icon" aria-hidden="true">✋</span>
+            <span class="cat-name">Mãos</span>
+            <span class="cat-desc">Punhos · Dedos</span>
+            <span class="cat-count">4 exercícios</span>
+          </button>
+          <button class="category-btn featured" data-category="completo" aria-label="Sessão completa com todos os exercícios">
+            <span class="cat-icon" aria-hidden="true">⭐</span>
+            <span class="cat-name">Sessão Completa</span>
+            <span class="cat-desc">Todos os grupos</span>
+            <span class="cat-count">12 exercícios</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="history-strip" class="history-strip" hidden>
+        <p id="history-strip-text"></p>
+        <button id="btn-view-history" class="btn-link">Ver histórico →</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════
+       ECRÃ 2: SESSÃO DE EXERCÍCIO
+  ═══════════════════════════════════════════════ -->
+  <main id="screen-session" class="screen" role="main" aria-label="Sessão de exercício">
+    <header class="session-header">
+      <button class="btn-back" id="btn-session-exit" aria-label="Sair da sessão">
+        ← Sair
+      </button>
+      <div class="session-progress">
+        <span id="session-counter" aria-live="polite">Exercício 1 de 4</span>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="progress-bar" aria-valuenow="0">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+      <button class="btn-icon" id="btn-mute" aria-label="Silenciar voz" title="Silenciar / ativar voz">
+        🔊
+      </button>
+    </header>
+
+    <div class="session-body">
+      <!-- PAINEL ESQUERDO: Demonstração animada -->
+      <section class="demo-panel" aria-label="Demonstração do exercício">
+        <h2 id="exercise-name" class="exercise-title">—</h2>
+        <div class="animation-stage" id="animation-stage" role="img" aria-label="Animação a demonstrar o movimento">
+          <!-- SVG injetado pelo JS -->
+        </div>
+        <p class="exercise-desc" id="exercise-desc">—</p>
+
+        <!-- Indicador de fase (qual movimento fazer agora) -->
+        <div class="phase-box" id="phase-box" aria-live="assertive" aria-atomic="true">
+          <span id="phase-text">Pronto para começar</span>
+        </div>
+      </section>
+
+      <!-- PAINEL DIREITO: Câmara + Controlo -->
+      <section class="control-panel" aria-label="Câmara e controlos">
+
+        <!-- Câmara (opcional) -->
+        <div class="camera-wrap" id="camera-wrap">
+          <video id="camera-video" autoplay muted playsinline aria-label="Imagem da câmara — veja os seus movimentos"></video>
+          <canvas id="motion-canvas" aria-hidden="true" hidden></canvas>
+          <div class="motion-bar-wrap" id="motion-bar-wrap" hidden aria-label="Nível de movimento detetado">
+            <div class="motion-bar" id="motion-bar"></div>
+          </div>
+          <div class="camera-placeholder" id="camera-placeholder">
+            <div class="camera-ph-icon">📷</div>
+            <p>Câmara desativada</p>
+            <button class="btn-secondary" id="btn-enable-camera">Ativar câmara</button>
+          </div>
+        </div>
+
+        <!-- Contador de repetições -->
+        <div class="rep-display" aria-live="polite">
+          <div class="rep-numbers">
+            <span id="rep-done" class="rep-done">0</span>
+            <span class="rep-sep">/</span>
+            <span id="rep-total" class="rep-total">10</span>
+          </div>
+          <p class="rep-label">repetições</p>
+        </div>
+
+        <!-- Temporizador circular -->
+        <div class="timer-ring-wrap">
+          <svg class="timer-ring" viewBox="0 0 110 110" aria-hidden="true">
+            <circle class="timer-track" cx="55" cy="55" r="48"/>
+            <circle class="timer-fill" id="timer-circle" cx="55" cy="55" r="48"/>
+          </svg>
+          <div class="timer-center" id="timer-center" aria-live="polite">
+            <span id="timer-seconds">--</span>
+            <span class="timer-unit">seg</span>
+          </div>
+        </div>
+
+        <!-- Botões de controlo -->
+        <div class="session-controls">
+          <button class="btn-primary" id="btn-start-pause">
+            ▶ Iniciar
+          </button>
+          <button class="btn-secondary" id="btn-repeat-audio" aria-label="Ouvir instruções novamente">
+            🔁 Ouvir
+          </button>
+          <button class="btn-skip" id="btn-skip" aria-label="Saltar para o próximo exercício">
+            Saltar →
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Overlay de feedback positivo -->
+    <div class="feedback-overlay" id="feedback-overlay" aria-live="assertive" hidden>
+      <div class="feedback-card" id="feedback-card">
+        <span class="feedback-emoji" id="feedback-emoji">🎉</span>
+        <p class="feedback-msg" id="feedback-msg">Muito bem!</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════
+       ECRÃ 3: SESSÃO CONCLUÍDA
+  ═══════════════════════════════════════════════ -->
+  <main id="screen-complete" class="screen" role="main" aria-label="Sessão concluída">
+    <div class="complete-inner">
+      <div class="complete-header">
+        <div class="trophy-icon" aria-hidden="true">🏆</div>
+        <h2>Sessão Concluída!</h2>
+        <p class="complete-msg" id="complete-msg">Excelente trabalho hoje!</p>
+      </div>
+
+      <div class="stats-grid" aria-label="Resultados da sessão">
+        <div class="stat-card">
+          <span class="stat-val" id="stat-exercises">0</span>
+          <span class="stat-lbl">Exercícios</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val" id="stat-reps">0</span>
+          <span class="stat-lbl">Repetições</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val" id="stat-time">0m</span>
+          <span class="stat-lbl">Duração</span>
+        </div>
+      </div>
+
+      <div class="completed-list" id="completed-list" aria-label="Exercícios realizados">
+        <!-- Itens injetados pelo JS -->
+      </div>
+
+      <div class="complete-actions">
+        <button class="btn-primary" id="btn-new-session">Nova Sessão</button>
+        <button class="btn-secondary" id="btn-go-history">Ver Histórico</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════
+       ECRÃ 4: HISTÓRICO
+  ═══════════════════════════════════════════════ -->
+  <main id="screen-history" class="screen" role="main" aria-label="Histórico de sessões">
+    <div class="history-inner">
+      <header class="history-header">
+        <button class="btn-back" id="btn-history-back">← Voltar</button>
+        <h2>Histórico de Sessões</h2>
+      </header>
+      <div id="history-list" aria-label="Lista de sessões anteriores">
+        <!-- Injetado pelo JS -->
+      </div>
+      <div class="history-actions">
+        <button class="btn-danger" id="btn-clear-history">Limpar Histórico</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Diálogo: confirmar saída da sessão -->
+  <dialog id="dialog-exit" aria-modal="true" aria-labelledby="dialog-exit-title">
+    <h3 id="dialog-exit-title">Sair da sessão?</h3>
+    <p>O progresso atual não será guardado.</p>
+    <div class="dialog-actions">
+      <button class="btn-danger" id="btn-exit-confirm">Sim, sair</button>
+      <button class="btn-secondary" id="btn-exit-cancel">Cancelar</button>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
