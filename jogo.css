@@ -814,6 +814,7 @@ html, body {
 }
 .btn-mode:hover { background: rgba(255,255,255,.32); transform: scale(1.05); }
 .btn-mode-grab { border-color: rgba(255,200,50,.6); }
+.btn-mode-free { border-color: rgba(100,220,255,.6); }
 
 /* Estado agarrado */
 #character-el.grabbed svg {

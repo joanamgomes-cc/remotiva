@@ -901,10 +901,18 @@ function placeStars(scene) {
   const totalStars = G.totalStars;
 
   for (let i = 0; i < totalStars; i++) {
-    const t = 0.05 + (i / (totalStars - 1)) * 0.90;
-    const [fx, fy] = catmullRom(pts, t);
-    const x = fx * window.innerWidth;
-    const y = fy * window.innerHeight;
+    let x, y, t;
+    if (G.mode === 'free') {
+      // Distribui as estrelas aleatoriamente pelo ecrã (com margem)
+      t = 0.05 + (i / (totalStars - 1)) * 0.90; // mantido para compatibilidade mas não usado em posição
+      x = (0.1 + Math.random() * 0.8) * window.innerWidth;
+      y = (0.1 + Math.random() * 0.75) * window.innerHeight;
+    } else {
+      t = 0.05 + (i / (totalStars - 1)) * 0.90;
+      const [fx, fy] = catmullRom(pts, t);
+      x = fx * window.innerWidth;
+      y = fy * window.innerHeight;
+    }
 
     const star = document.createElement('div');
     star.className = 'path-star';
@@ -1119,7 +1127,7 @@ function gameLoop(time) {
     G.t = Math.min(1, G.t + G.charSpeed * speedMult * dt);
     const [fx, fy] = catmullRom(G.pathPts, G.t);
     G.charPos = [fx * W, fy * H];
-  } else {
+  } else if (G.mode === 'grab') {
     // Mode 2: personagem segue a mão quando agarrada
     const hx = G.handPos[0] * W;
     const hy = G.handPos[1] * H;
@@ -1136,6 +1144,15 @@ function gameLoop(time) {
       }
     } else {
       G.grabbed = false; // larga ao abrir a mão
+    }
+  } else {
+    // Mode 3: personagem segue a mão livremente com suavização
+    if (G.handVisible) {
+      const hx = G.handPos[0] * W;
+      const hy = G.handPos[1] * H;
+      const lerpSpeed = 1 - Math.pow(0.04, dt / 1000);
+      G.charPos[0] += (hx - G.charPos[0]) * lerpSpeed;
+      G.charPos[1] += (hy - G.charPos[1]) * lerpSpeed;
     }
   }
 
@@ -1198,8 +1215,8 @@ function gameLoop(time) {
     const charDist = Math.sqrt(charDx*charDx + charDy*charDy);
     const collectRadius = Math.min(W, H) * 0.13;
 
-    // Mode 1: precisa de mão a seguir; Mode 2: basta a personagem passar
-    const canCollect = G.mode === 'follow' ? G.handFollowing : G.grabbed;
+    // Mode 1: precisa de mão a seguir; Mode 2: basta estar agarrado; Mode 3: basta passar perto
+    const canCollect = G.mode === 'follow' ? G.handFollowing : G.mode === 'grab' ? G.grabbed : true;
     if (charDist < collectRadius && canCollect) {
       collectStar(star);
     }
@@ -1304,7 +1321,8 @@ function startGame(sceneIndex, mode = 'follow') {
 
   // Setup HUD
   el('hud-stars').textContent = '0';
-  el('hud-scene-name').textContent = G.scene.name + (mode === 'grab' ? ' ✊' : ' 🏃');
+  const modeIcon = mode === 'grab' ? ' ✊' : mode === 'free' ? ' 🖐' : ' 🏃';
+  el('hud-scene-name').textContent = G.scene.name + modeIcon;
 
   // Setup character
   const charEl = el('character-el');
@@ -1340,8 +1358,13 @@ function startGame(sceneIndex, mode = 'follow') {
     const offsets = { dolphin:[100,50], butterfly:[80,60], rocket:[35,70], macaw:[90,63] };
     const [ox, oy] = offsets[G.scene.charKey] || [70, 50];
 
-    // Posição inicial: 1.º waypoint real (G.t = 0.12)
-    const [fx0, fy0] = catmullRom(G.pathPts, G.t);
+    // Posição inicial: centro do ecrã em modo livre, 1.º waypoint nos outros modos
+    let fx0, fy0;
+    if (mode === 'free') {
+      fx0 = 0.5; fy0 = 0.5;
+    } else {
+      [fx0, fy0] = catmullRom(G.pathPts, G.t);
+    }
     G.charPos = [fx0 * W, fy0 * H];
     const charWrap = el('character-wrap');
     if (charWrap) {
@@ -1398,10 +1421,12 @@ function buildSceneSelect() {
       <div class="scene-mode-btns">
         <button class="btn-mode btn-mode-follow" data-i="${i}">🏃 Seguir</button>
         <button class="btn-mode btn-mode-grab"   data-i="${i}">✊ Guiar</button>
+        <button class="btn-mode btn-mode-free"   data-i="${i}">🖐 Livre</button>
       </div>
     `;
     card.querySelector('.btn-mode-follow').addEventListener('click', e => { e.stopPropagation(); startGame(i, 'follow'); });
     card.querySelector('.btn-mode-grab').addEventListener('click',   e => { e.stopPropagation(); startGame(i, 'grab'); });
+    card.querySelector('.btn-mode-free').addEventListener('click',   e => { e.stopPropagation(); startGame(i, 'free'); });
     grid.appendChild(card);
   });
 }
