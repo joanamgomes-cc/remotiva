@@ -351,7 +351,8 @@ html, body {
 .scene-card.ocean   { background: linear-gradient(135deg, #003F6B, #1A8FD1); }
 .scene-card.garden  { background: linear-gradient(135deg, #1A3A0D, #4A8C2A); }
 .scene-card.space   { background: linear-gradient(135deg, #020214, #1A1A5E); }
-.scene-card.sky     { background: linear-gradient(135deg, #1A6EA8, #87CEEB); }
+.scene-card.sky        { background: linear-gradient(135deg, #1A6EA8, #87CEEB); }
+.scene-card.spiderman  { background: linear-gradient(135deg, #0A0820 0%, #5A0808 55%, #0A0A40 100%); }
 
 .scene-locked {
   opacity: .5;

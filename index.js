@@ -215,6 +215,66 @@ const CHARS = {
   </g>
 </svg>`,
 
+  spiderman: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 130" width="160" height="122">
+  <!-- Spider-Man — pose de balanço com teia, estilo cartoon -->
+
+  <!-- Pernas azuis a arrastar atrás -->
+  <path d="M65,98 C46,112 28,120 14,124" stroke="#1A40C8" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <path d="M74,104 C58,118 46,126 36,132" stroke="#1A40C8" stroke-width="14" stroke-linecap="round" fill="none"/>
+
+  <!-- Corpo inferior azul -->
+  <ellipse cx="82" cy="90" rx="20" ry="14" fill="#1A40C8"/>
+
+  <!-- Tronco vermelho -->
+  <ellipse cx="96" cy="74" rx="24" ry="18" transform="rotate(-12,96,74)" fill="#CC1212"/>
+
+  <!-- Linhas de teia no tronco -->
+  <path d="M75,72 C85,68 107,68 117,75" stroke="#880000" stroke-width="1.2" fill="none" opacity="0.6"/>
+  <path d="M74,81 C84,77 107,77 118,83" stroke="#880000" stroke-width="1.2" fill="none" opacity="0.6"/>
+
+  <!-- Símbolo da aranha -->
+  <path d="M96,74 L91,67 M96,74 L101,67 M88,76 L80,72 M104,76 L112,72 M90,79 L85,86 M102,79 L107,86"
+        stroke="black" stroke-width="1.5" stroke-linecap="round" opacity="0.45" fill="none"/>
+
+  <!-- Braço traseiro (esquerda, para trás) -->
+  <path d="M83,62 C65,51 50,43 38,38" stroke="#CC1212" stroke-width="12" stroke-linecap="round" fill="none"/>
+
+  <!-- Braço dianteiro (direita, a disparar teia) -->
+  <path d="M110,60 C128,46 144,33 156,22" stroke="#CC1212" stroke-width="12" stroke-linecap="round" fill="none"/>
+
+  <!-- Mão a disparar teia -->
+  <circle cx="157" cy="22" r="8" fill="#CC1212"/>
+  <rect x="152" y="11" width="4.5" height="10" rx="2.2" fill="#CC1212"/>
+  <rect x="159" y="12" width="4.5" height="9"  rx="2.2" fill="#CC1212"/>
+
+  <!-- Fios de teia dos dedos -->
+  <line x1="154" y1="11" x2="148" y2="2"  stroke="rgba(215,215,230,0.9)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="157" y1="11" x2="154" y2="1"  stroke="rgba(215,215,230,0.9)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="161" y1="12" x2="163" y2="2"  stroke="rgba(215,215,230,0.9)" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Teia presa no edifício fora do ecrã -->
+  <path d="M157,20 C163,12 168,6 170,0" stroke="rgba(210,210,225,0.5)" stroke-width="2" fill="none"/>
+
+  <!-- Cabeça vermelha -->
+  <circle cx="120" cy="46" r="23" fill="#CC1212"/>
+
+  <!-- Padrão de teia na máscara -->
+  <path d="M99,38 C108,35 120,33 140,38" stroke="#880000" stroke-width="1" fill="none" opacity="0.55"/>
+  <path d="M98,46 C107,43 120,42 141,47" stroke="#880000" stroke-width="1" fill="none" opacity="0.55"/>
+  <path d="M99,54 C108,52 120,51 140,54" stroke="#880000" stroke-width="1" fill="none" opacity="0.55"/>
+  <path d="M101,62 C110,61 120,60 138,62" stroke="#880000" stroke-width="1" fill="none" opacity="0.55"/>
+  <path d="M108,26 C106,36 105,46 106,64" stroke="#880000" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M120,24 L120,64"               stroke="#880000" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M132,26 C134,36 135,46 133,63" stroke="#880000" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M141,31 C143,42 142,52 139,62" stroke="#880000" stroke-width="1" fill="none" opacity="0.5"/>
+
+  <!-- Olhos brancos amendoados (icónicos) -->
+  <ellipse cx="110" cy="43" rx="10" ry="7.5" transform="rotate(-15,110,43)" fill="white" stroke="#880000" stroke-width="1"/>
+  <ellipse cx="130" cy="41" rx="10" ry="7.5" transform="rotate(10,130,41)"  fill="white" stroke="#880000" stroke-width="1"/>
+  <ellipse cx="108" cy="41" rx="3.5" ry="2.5" transform="rotate(-15,108,41)" fill="rgba(180,215,255,0.55)"/>
+  <ellipse cx="128" cy="39" rx="3.5" ry="2.5" transform="rotate(10,128,39)"  fill="rgba(180,215,255,0.55)"/>
+</svg>`,
+
   macaw: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" width="180" height="126">
   <!-- Arara — perfil claro: vermelho/azul/verde, bico curvo inconfundível -->
 
@@ -281,6 +341,11 @@ const CHARS = {
 /* ──────────────────────────────────────────────────────────────
    SCENE DEFINITIONS
 ────────────────────────────────────────────────────────────── */
+const SM_MSGS = [
+  'THWIP! 🕸️', 'Teia disparada!', 'Spider-Man!',
+  'Super-herói! 🕷️', 'Cidade protegida!', 'Incrível!',
+  'Aranha activada! 🕸️', 'Fantástico!', 'Continua assim!'
+];
 const SCENES = [
   {
     id: 'ocean',
@@ -332,6 +397,22 @@ const SCENES = [
     waypoints: [
       [0.12, 0.45], [0.25, 0.25], [0.38, 0.50], [0.52, 0.20],
       [0.62, 0.45], [0.72, 0.22], [0.82, 0.40], [0.90, 0.18]
+    ]
+  },
+  {
+    id: 'spiderman',
+    name: 'Nova Iorque',
+    emoji: '🕷️',
+    charKey: 'spiderman',
+    bgTop: '#04060F',
+    bgBottom: '#0C1228',
+    accentColor: '#FF3030',
+    trailColor: '200,200,225',
+    msgs: SM_MSGS,
+    wide: true,
+    waypoints: [
+      [0.05, 0.72], [0.20, 0.26], [0.36, 0.68], [0.52, 0.22],
+      [0.66, 0.64], [0.78, 0.20], [0.88, 0.56], [0.96, 0.24]
     ]
   }
 ];
@@ -431,6 +512,22 @@ const Sound = (() => {
       tone(2800, 'sine', 0.07, 0.1, 0.09);
       tone(2200, 'sine', 0.1, 0.1, 0.17);
       tone(3000, 'sine', 0.06, 0.08, 0.26);
+    },
+
+    spiderman: () => {
+      // Vento de balanço (swinging rush)
+      const c = getCtx();
+      const osc = c.createOscillator();
+      const flt = c.createBiquadFilter();
+      const g = c.createGain();
+      osc.connect(flt); flt.connect(g); g.connect(c.destination);
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(90, c.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(320, c.currentTime + 0.35);
+      flt.type = 'bandpass'; flt.frequency.value = 700; flt.Q.value = 1.8;
+      g.gain.setValueAtTime(0.07, c.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.5);
+      osc.start(c.currentTime); osc.stop(c.currentTime + 0.55);
     }
   };
 
@@ -447,6 +544,18 @@ const Sound = (() => {
         tone(1320, 'sine', 0.10, 0.12, 0.08);
         tone(1760, 'sine', 0.08, 0.10, 0.16);
       } catch (e) {}
+    },
+
+    thwip() {
+      if (muted) return;
+      try {
+        // Thwip clássico: subida rápida + snap de ruído
+        tone(180, 'sawtooth', 0.03, 0.20);
+        tone(500,  'sawtooth', 0.03, 0.16, 0.02);
+        tone(1200, 'sine',     0.04, 0.12, 0.05);
+        tone(2600, 'sine',     0.03, 0.08, 0.08);
+        noise(0.06, 0.14, 0.0, 4200);
+      } catch(e) {}
     },
 
     levelComplete() {
@@ -711,6 +820,109 @@ const BgRenderers = {
     };
   })(),
 
+  spiderman: (() => {
+    // [x_frac, w_frac, h_frac] — edifícios do skyline de NYC
+    const buildings = [
+      [0.00, 0.08, 0.38], [0.07, 0.05, 0.52], [0.11, 0.07, 0.35],
+      [0.17, 0.05, 0.58], [0.21, 0.10, 0.42], [0.30, 0.06, 0.50],
+      [0.35, 0.08, 0.63], [0.42, 0.05, 0.46], [0.46, 0.09, 0.40],
+      [0.54, 0.06, 0.56], [0.59, 0.08, 0.38], [0.66, 0.05, 0.52],
+      [0.70, 0.12, 0.44], [0.81, 0.06, 0.54], [0.86, 0.08, 0.40],
+      [0.93, 0.07, 0.36]
+    ];
+    // Teias entre edifícios [x1, x2, y1, y2, sag] (frações do ecrã)
+    const webs = [
+      [0.09, 0.28, 0.38, 0.33, 0.05],
+      [0.28, 0.45, 0.33, 0.30, 0.06],
+      [0.46, 0.62, 0.30, 0.33, 0.07],
+      [0.64, 0.80, 0.32, 0.35, 0.05]
+    ];
+    const starPos = [
+      [0.05,0.06],[0.18,0.04],[0.32,0.08],[0.48,0.03],
+      [0.62,0.07],[0.70,0.04],[0.92,0.06],[0.88,0.10],
+      [0.25,0.12],[0.55,0.11],[0.10,0.15],[0.75,0.09]
+    ];
+
+    return function(ctx, w, h, t) {
+      // Céu nocturno
+      const grd = ctx.createLinearGradient(0, 0, 0, h);
+      grd.addColorStop(0, '#04060F');
+      grd.addColorStop(0.55, '#080C1C');
+      grd.addColorStop(1, '#0C1228');
+      ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
+
+      // Brilho laranja do horizonte da cidade
+      const hgrd = ctx.createLinearGradient(0, h * 0.55, 0, h);
+      hgrd.addColorStop(0, 'rgba(255,100,20,0.00)');
+      hgrd.addColorStop(1, 'rgba(255,80,10,0.10)');
+      ctx.fillStyle = hgrd; ctx.fillRect(0, h * 0.55, w, h * 0.45);
+
+      // Lua
+      const mx = w * 0.80, my = h * 0.12;
+      const mgrd = ctx.createRadialGradient(mx, my, 0, mx, my, 70);
+      mgrd.addColorStop(0, 'rgba(255,248,210,0.18)');
+      mgrd.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = mgrd;
+      ctx.beginPath(); ctx.arc(mx, my, 70, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(mx, my, 26, 0, Math.PI * 2);
+      ctx.fillStyle = '#F4EAA8'; ctx.fill();
+      ctx.beginPath(); ctx.arc(mx + 10, my - 4, 22, 0, Math.PI * 2);
+      ctx.fillStyle = '#080C1C'; ctx.fill();
+
+      // Estrelas (a piscar)
+      starPos.forEach(([sx, sy]) => {
+        const alpha = 0.45 + 0.4 * Math.sin(t * 0.0015 + sx * 20 + sy * 15);
+        ctx.beginPath(); ctx.arc(sx * w, sy * h, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,240,${alpha})`; ctx.fill();
+      });
+
+      // Teias decorativas entre edifícios
+      ctx.strokeStyle = 'rgba(200,200,220,0.22)'; ctx.lineWidth = 1.5;
+      webs.forEach(([x1f, x2f, y1f, y2f, sag]) => {
+        const x1 = x1f*w, x2 = x2f*w, y1 = y1f*h, y2 = y2f*h;
+        const mx2 = (x1+x2)/2, my2 = Math.min(y1,y2) + sag*h;
+        ctx.beginPath(); ctx.moveTo(x1, y1);
+        ctx.quadraticCurveTo(mx2, my2, x2, y2); ctx.stroke();
+      });
+
+      // Edifícios
+      buildings.forEach(([bxf, bwf, bhf], bi) => {
+        const bx = bxf*w, bw = Math.max(bwf*w, 8);
+        const bh = bhf*h, by = h - bh;
+
+        ctx.fillStyle = '#070B14'; ctx.fillRect(bx, by, bw, bh);
+        ctx.strokeStyle = 'rgba(50,70,110,0.45)'; ctx.lineWidth = 0.8;
+        ctx.strokeRect(bx, by, bw, bh);
+
+        // Janelas iluminadas (determinísticas pelo índice)
+        const wW = Math.max(3, bw * 0.14), wH = wW * 1.5;
+        const cols = Math.max(1, Math.floor((bw - 4) / (wW + 3)));
+        const rows = Math.max(1, Math.floor((bh * 0.78) / (wH + 4)));
+        const padX = (bw - cols * (wW + 3) + 3) / 2;
+        const padY = bh * 0.10;
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const seed = (bi * 37 + r * 11 + c * 17) % 100;
+            if (seed < 42) {
+              const wx = bx + padX + c * (wW + 3);
+              const wy = by + padY + r * (wH + 4);
+              ctx.fillStyle = seed < 20 ? 'rgba(255,215,90,0.72)' : 'rgba(160,200,255,0.50)';
+              ctx.fillRect(wx, wy, wW, wH);
+            }
+          }
+        }
+      });
+
+      // Luz vermelha a piscar no edifício mais alto
+      const pulseA = 0.5 + 0.45 * Math.sin(t * 0.0025);
+      const tb = buildings[6];
+      ctx.beginPath();
+      ctx.arc(tb[0]*w + tb[1]*w*0.5, h - tb[2]*h - 5, 5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(220,40,40,${pulseA})`; ctx.fill();
+    };
+  })(),
+
   sky: (() => {
     const clouds = Array.from({length: 7}, () => ({
       x: Math.random(), y: 0.05 + Math.random() * 0.55,
@@ -832,13 +1044,14 @@ const Trail = (() => {
       if (!ctx2 || !canvas) return;
       ctx2.clearRect(0, 0, canvas.width, canvas.height);
       if (history.length < 2) return;
+      const trailRGB = (G.scene && G.scene.trailColor) || '255,220,80';
       for (let i = 1; i < history.length; i++) {
         const alpha = i / history.length;
         const w = alpha * 6;
         ctx2.beginPath();
         ctx2.moveTo(history[i-1].x, history[i-1].y);
         ctx2.lineTo(history[i].x, history[i].y);
-        ctx2.strokeStyle = `rgba(255,220,80,${alpha * 0.7})`;
+        ctx2.strokeStyle = `rgba(${trailRGB},${alpha * 0.7})`;
         ctx2.lineWidth = w;
         ctx2.lineCap = 'round';
         ctx2.stroke();
@@ -846,7 +1059,7 @@ const Trail = (() => {
         if (i % 4 === 0) {
           ctx2.beginPath();
           ctx2.arc(history[i].x, history[i].y, w * 0.8, 0, Math.PI * 2);
-          ctx2.fillStyle = `rgba(255,255,200,${alpha * 0.5})`;
+          ctx2.fillStyle = `rgba(${trailRGB},${alpha * 0.5})`;
           ctx2.fill();
         }
       }
@@ -1223,7 +1436,7 @@ function gameLoop(time) {
   // Update character element position (centrado no ponto do caminho)
   const charWrap = el('character-wrap');
   if (charWrap) {
-    const offsets = { dolphin:[100,50], butterfly:[80,60], rocket:[35,70], macaw:[90,63] };
+    const offsets = { dolphin:[100,50], butterfly:[80,60], rocket:[35,70], macaw:[90,63], spiderman:[90,70] };
     const [ox, oy] = offsets[G.scene.charKey] || [60, 40];
     charWrap.style.transform = `translate(${G.charPos[0] - ox}px, ${G.charPos[1] - oy}px)`;
 
@@ -1322,9 +1535,11 @@ function collectStar(star) {
   // Particles at star position
   burstParticles(star.x, star.y, G.scene.accentColor);
 
-  // Sound + message
-  Sound.starCollect();
-  const msg = MSGS[Math.floor(Math.random() * MSGS.length)];
+  // Sound + message (temáticos por cena)
+  if (G.scene && G.scene.id === 'spiderman') Sound.thwip();
+  else Sound.starCollect();
+  const msgPool = (G.scene && G.scene.msgs) ? G.scene.msgs : MSGS;
+  const msg = msgPool[Math.floor(Math.random() * msgPool.length)];
   showEncourage(msg);
 
   // Check level complete
@@ -1419,7 +1634,7 @@ function startGame(sceneIndex, mode = 'follow') {
   // Place stars + pré-posicionar personagem antes do countdown
   requestAnimationFrame(() => {
     const W = window.innerWidth, H = window.innerHeight;
-    const offsets = { dolphin:[100,50], butterfly:[80,60], rocket:[35,70], macaw:[90,63] };
+    const offsets = { dolphin:[100,50], butterfly:[80,60], rocket:[35,70], macaw:[90,63], spiderman:[90,70] };
     const [ox, oy] = offsets[G.scene.charKey] || [70, 50];
 
     // Posição inicial: centro do ecrã em modo livre, 1.º waypoint nos outros modos
@@ -1480,6 +1695,7 @@ function buildSceneSelect() {
   SCENES.forEach((scene, i) => {
     const card = document.createElement('div');
     card.className = `scene-card ${scene.id}`;
+    if (scene.wide) card.style.gridColumn = '1 / -1';
     card.innerHTML = `
       <div class="scene-card-emoji">${scene.emoji}</div>
       <div class="scene-card-name">${scene.name}</div>
