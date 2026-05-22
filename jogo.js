@@ -1091,7 +1091,7 @@ const MODE_INSTRUCTIONS = {
   }
 };
 
-const INSTR_DURATION = 2800; // ms que as instruções ficam visíveis
+const INSTR_DURATION = 6000; // ms que as instruções ficam visíveis
 
 function showInstructions(mode, callback) {
   const overlay = el('instructions-overlay');
