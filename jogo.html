@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Segue & Joga!</title>
+  <link rel="stylesheet" href="jogo.css?v=8">
+
+  <!-- MediaPipe Hands via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════
+       ECRÃ 1: BOAS-VINDAS
+  ═══════════════════════════════════════ -->
+  <div id="screen-welcome" class="screen active">
+    <div class="welcome-bg" id="welcome-bg">
+      <!-- Onda animada -->
+      <div class="wave wave1"></div>
+      <div class="wave wave2"></div>
+    </div>
+
+    <div class="welcome-content">
+      <h1 class="game-title">
+        <span class="title-line1">Segue</span>
+        <span class="title-amp">&amp;</span>
+        <span class="title-line2">Joga!</span>
+      </h1>
+      <p class="game-subtitle">Move o teu braço e segue os animais!</p>
+
+      <!-- Preview animado da personagem (injetado pelo JS) -->
+      <div class="welcome-char" id="welcome-char"></div>
+
+      <button class="btn-play" id="btn-play">
+        <span class="btn-play-icon">▶</span>
+        JOGAR
+      </button>
+
+      <a href="index.html" class="btn-back-link">← Voltar à Recuperação Motora</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       ECRÃ 2: CÂMARA / CARREGAMENTO
+  ═══════════════════════════════════════ -->
+  <div id="screen-camera" class="screen">
+    <div class="camera-setup">
+      <div class="camera-icon-wrap">
+        <div class="camera-pulse"></div>
+        <span class="camera-icon">📷</span>
+      </div>
+      <h2>Precisamos da tua câmara!</h2>
+      <p>Serve para ver onde está a tua mão.<br>
+         Nada é gravado ou enviado.</p>
+      <div class="camera-preview-wrap" id="camera-preview-wrap" hidden>
+        <video id="setup-video" autoplay muted playsinline></video>
+        <div class="hand-detected" id="hand-detected">✋ Mão detetada!</div>
+      </div>
+      <button class="btn-play" id="btn-allow-camera">Ativar câmara</button>
+      <div class="loading-bar-wrap" id="loading-bar-wrap" hidden>
+        <p class="loading-text" id="loading-text">A carregar inteligência artificial…</p>
+        <div class="loading-bar">
+          <div class="loading-fill" id="loading-fill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       ECRÃ 3: SELEÇÃO DE CENA
+  ═══════════════════════════════════════ -->
+  <div id="screen-select" class="screen">
+    <div class="select-inner">
+      <h2 class="select-title">Escolhe a tua aventura!</h2>
+      <div class="scene-grid" id="scene-grid">
+        <!-- Injetado pelo JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       ECRÃ 4: JOGO
+  ═══════════════════════════════════════ -->
+  <div id="screen-game" class="screen">
+    <!-- Canvas do fundo animado -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Camada das personagens e estrelas -->
+    <div id="game-layer">
+      <!-- Trilha da personagem -->
+      <canvas id="trail-canvas"></canvas>
+
+      <!-- Personagem (injetado pelo JS) -->
+      <div id="character-wrap">
+        <div id="character-el"></div>
+      </div>
+
+      <!-- Indicador da mão -->
+      <div id="hand-indicator" hidden>
+        <div class="hand-ring"></div>
+        <div class="hand-ring ring2"></div>
+        <div class="hand-dot"></div>
+      </div>
+
+      <!-- Estrelas no caminho (injetadas pelo JS) -->
+      <div id="stars-layer"></div>
+
+      <!-- Efeitos de partículas (injetados pelo JS) -->
+      <div id="particles-layer"></div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud">
+      <div class="hud-left">
+        <span class="hud-stars-icon">⭐</span>
+        <span class="hud-stars-count" id="hud-stars">0</span>
+      </div>
+      <div class="hud-center">
+        <span class="hud-scene-name" id="hud-scene-name">Oceano</span>
+      </div>
+      <div class="hud-right">
+        <button class="hud-btn" id="btn-pause-game" aria-label="Pausa">⏸</button>
+        <button class="hud-btn" id="btn-mute-game" aria-label="Som">🔊</button>
+      </div>
+    </div>
+
+    <!-- Mensagem de encorajamento -->
+    <div class="encourage-msg" id="encourage-msg" hidden></div>
+
+    <!-- Instruções do modo (antes da contagem) -->
+    <div class="instructions-overlay" id="instructions-overlay">
+      <div class="instructions-card">
+        <div class="instructions-icon" id="instructions-icon"></div>
+        <h3 class="instructions-title" id="instructions-title"></h3>
+        <p class="instructions-text" id="instructions-text"></p>
+        <div class="instructions-bar-wrap">
+          <div class="instructions-bar" id="instructions-bar"></div>
+        </div>
+        <button class="btn-skip-instructions" id="btn-skip-instructions">Saltar ▶</button>
+      </div>
+    </div>
+
+    <!-- Contagem atrás -->
+    <div class="countdown-overlay" id="countdown-overlay">
+      <div class="countdown-num" id="countdown-num">3</div>
+    </div>
+
+    <!-- Camera PiP -->
+    <div class="camera-pip" id="camera-pip">
+      <video id="game-video" autoplay muted playsinline></video>
+      <canvas id="pip-canvas"></canvas>
+    </div>
+
+    <!-- Pausa overlay -->
+    <div class="pause-overlay" id="pause-overlay">
+      <div class="pause-card">
+        <h3>⏸ Pausado</h3>
+        <button class="btn-play" id="btn-resume">Continuar</button>
+        <button class="btn-secondary-game" id="btn-quit">Sair</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       ECRÃ 5: NÍVEL COMPLETO
+  ═══════════════════════════════════════ -->
+  <div id="screen-complete" class="screen">
+    <div class="complete-bg" id="complete-bg"></div>
+    <div class="complete-content">
+      <div class="complete-char" id="complete-char"></div>
+      <h2 class="complete-title" id="complete-title">Fantástico! 🎉</h2>
+      <p class="complete-subtitle" id="complete-subtitle">Apanhaste todas as estrelas!</p>
+
+      <div class="stars-display" id="stars-display">
+        <!-- Estrelas injetadas pelo JS -->
+      </div>
+
+      <div class="complete-btns">
+        <button class="btn-play" id="btn-next-scene">Próxima Aventura →</button>
+        <button class="btn-secondary-game" id="btn-replay">Repetir</button>
+        <button class="btn-secondary-game" id="btn-menu">Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="jogo.js?v=10"></script>
+</body>
+</html>
