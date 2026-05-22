@@ -1071,6 +1071,61 @@ function drawPip(results) {
 }
 
 /* ──────────────────────────────────────────────────────────────
+   MODE INSTRUCTIONS
+────────────────────────────────────────────────────────────── */
+const MODE_INSTRUCTIONS = {
+  follow: {
+    icon: '🏃',
+    title: 'Modo Seguir',
+    text: 'Move a mão perto do animal para ele avançar.\nApanha todas as estrelas ⭐ pelo caminho!'
+  },
+  grab: {
+    icon: '✊',
+    title: 'Modo Guiar',
+    text: 'Fecha o punho junto ao animal para o agarrar.\nArrasta-o até cada estrela ⭐!'
+  },
+  free: {
+    icon: '🖐',
+    title: 'Modo Livre',
+    text: 'Move a mão pelo ecrã — o animal segue-te!\nPassa pelas estrelas ⭐ para as apanhar.'
+  }
+};
+
+const INSTR_DURATION = 2800; // ms que as instruções ficam visíveis
+
+function showInstructions(mode, callback) {
+  const overlay = el('instructions-overlay');
+  const iconEl  = el('instructions-icon');
+  const titleEl = el('instructions-title');
+  const textEl  = el('instructions-text');
+  const bar     = el('instructions-bar');
+
+  if (!overlay) { callback(); return; }
+
+  const instr = MODE_INSTRUCTIONS[mode] || MODE_INSTRUCTIONS.follow;
+  iconEl.textContent  = instr.icon;
+  titleEl.textContent = instr.title;
+  textEl.textContent  = instr.text;
+
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  overlay.classList.add('visible');
+
+  // Inicia barra de progresso
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      bar.style.transition = `width ${INSTR_DURATION}ms linear`;
+      bar.style.width = '100%';
+    });
+  });
+
+  setTimeout(() => {
+    overlay.classList.remove('visible');
+    callback();
+  }, INSTR_DURATION);
+}
+
+/* ──────────────────────────────────────────────────────────────
    COUNTDOWN
 ────────────────────────────────────────────────────────────── */
 function popNum(num, text) {
@@ -1373,10 +1428,12 @@ function startGame(sceneIndex, mode = 'follow') {
 
     placeStars(G.scene);
 
-    runCountdown(() => {
-      G.running = true;
-      G.lastTime = performance.now();
-      G.animFrame = requestAnimationFrame(gameLoop);
+    showInstructions(mode, () => {
+      runCountdown(() => {
+        G.running = true;
+        G.lastTime = performance.now();
+        G.animFrame = requestAnimationFrame(gameLoop);
+      });
     });
   });
 }
